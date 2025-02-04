@@ -14,13 +14,13 @@ data "aws_caller_identity" "current" {}
  
 # Create S3 bucket
 resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = "my-lambda-trigger-bucket-1234"
+  bucket = "my-bucket-nidhi"
   force_destroy = true
 }
  
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda_execution_role"
+  name = "my-lambda-nidhi"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -36,7 +36,9 @@ resource "aws_iam_role" "lambda_role" {
 }
 EOF
 }
- 
+
+resource "random_pet" "lambda_policy_suffix" {   length = 2 } 
+
 # IAM Policy for Lambda to Access S3 and CloudWatch Logs
 resource "aws_iam_policy" "lambda_policy" {
   name        = "lambda_s3_cloudwatch_policy_${random_pet.lambda_policy_suffix.id}"
@@ -71,7 +73,7 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_cloudwatch_attach" {
  
 # Lambda function
 resource "aws_lambda_function" "s3_lambda" {
-  function_name = "S3LambdaTrigger"
+  function_name = "NidhiTrigger"
   runtime       = "python3.8"
   handler       = "index.lambda_handler"
   role          = aws_iam_role.lambda_role.arn
@@ -99,4 +101,3 @@ resource "aws_lambda_permission" "allow_s3" {
   source_arn    = aws_s3_bucket.lambda_bucket.arn
 }
 
-resource "random_pet" "lambda_policy_suffix" {   length = 2 }
