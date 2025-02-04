@@ -1,20 +1,23 @@
 provider "aws" {
-  region = var.region  # Use the variable for region
+  region = var.region
 }
-
+ 
 # Define region variable
 variable "region" {
   description = "The AWS region to deploy resources into."
   type        = string
-  default     = "us-east-1"  # You can change this default to another region if needed
+  default     = "us-east-1"
 }
-
+ 
+# Get AWS account ID dynamically
+data "aws_caller_identity" "current" {}
+ 
 # Create S3 bucket
 resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = "my-lambda-trigger-bucket-1234"  # Change to a unique name
+  bucket = "my-lambda-trigger-bucket-1234"
   force_destroy = true
 }
-
+ 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
   name = "lambda_execution_role"
@@ -33,7 +36,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 EOF
 }
-
+ 
 # IAM Policy for Lambda to Access S3 and CloudWatch Logs
 resource "aws_iam_policy" "lambda_policy" {
   name        = "lambda_s3_cloudwatch_policy"
@@ -59,34 +62,34 @@ resource "aws_iam_policy" "lambda_policy" {
 }
 EOF
 }
-
+ 
 # Attach Policy to Lambda Role
 resource "aws_iam_role_policy_attachment" "lambda_s3_cloudwatch_attach" {
   policy_arn = aws_iam_policy.lambda_policy.arn
   role       = aws_iam_role.lambda_role.name
 }
-
+ 
 # Lambda function
 resource "aws_lambda_function" "s3_lambda" {
   function_name = "S3LambdaTrigger"
   runtime       = "python3.8"
   handler       = "index.lambda_handler"
   role          = aws_iam_role.lambda_role.arn
-
-  filename         = "../lambda_function.zip"  # ✅ Ensure correct path
-  source_code_hash = filebase64sha256("../lambda_function.zip")  # ✅ Hash for tracking changes
+ 
+  filename         = "../lambda_function.zip"
+  source_code_hash = filebase64sha256("../lambda_function.zip")
 }
-
+ 
 # S3 Event Notification -> Lambda
 resource "aws_s3_bucket_notification" "s3_lambda_trigger" {
   bucket = aws_s3_bucket.lambda_bucket.id
-
+ 
   lambda_function {
     lambda_function_arn = aws_lambda_function.s3_lambda.arn
     events             = ["s3:ObjectCreated:*"]
   }
 }
-
+ 
 # Allow S3 to invoke Lambda
 resource "aws_lambda_permission" "allow_s3" {
   statement_id  = "AllowExecutionFromS3"
