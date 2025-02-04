@@ -39,7 +39,7 @@ EOF
  
 # IAM Policy for Lambda to Access S3 and CloudWatch Logs
 resource "aws_iam_policy" "lambda_policy" {
-  name        = "lambda_s3_cloudwatch_policy"
+  name        = "lambda_s3_cloudwatch_policy_${random_pet.lambda_policy_suffix.id}"
   description = "Policy for Lambda to read S3 and write logs to CloudWatch"
   policy      = <<EOF
 {
@@ -98,3 +98,5 @@ resource "aws_lambda_permission" "allow_s3" {
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.lambda_bucket.arn
 }
+
+resource "random_pet" "lambda_policy_suffix" {   length = 2 }
