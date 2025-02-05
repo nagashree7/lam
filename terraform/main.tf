@@ -14,13 +14,13 @@ data "aws_caller_identity" "current" {}
  
 # Create S3 bucket
 resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = "my-bucket-nidhi"
+  bucket = "s3-bucket"
   force_destroy = true
 }
  
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "my-lambda-nidhi"
+  name = "lambda-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -73,7 +73,7 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_cloudwatch_attach" {
  
 # Lambda function
 resource "aws_lambda_function" "s3_lambda" {
-  function_name = "NidhiTrigger"
+  function_name = "LambdaTrigger"
   runtime       = "python3.8"
   handler       = "index.lambda_handler"
   role          = aws_iam_role.lambda_role.arn
