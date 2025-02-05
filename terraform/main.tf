@@ -6,7 +6,7 @@ provider "aws" {
 variable "region" {
   description = "The AWS region to deploy resources into."
   type        = string
-  default     = "us-east-1"
+  default     = "ap-southeast-2"
 }
  
 # Get AWS account ID dynamically
@@ -14,6 +14,7 @@ data "aws_caller_identity" "current" {}
  
 # Create S3 bucket
 resource "aws_s3_bucket" "lambda_bucket" {
+  provider = aws 
   bucket = "s3-bucket"
   force_destroy = true
 }
