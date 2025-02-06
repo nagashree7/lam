@@ -6,7 +6,7 @@ provider "aws" {
 variable "region" {
   description = "The AWS region to deploy resources into."
   type        = string
-  default     = "ap-southeast-2"
+  default     = "us-east-1"
 }
  
 # Get AWS account ID dynamically
