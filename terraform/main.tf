@@ -82,7 +82,7 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_cloudwatch_attach" {
 
 # Lambda function
 resource "aws_lambda_function" "s3_lambda" {
-  function_name = "Lambda-function"
+  function_name = "Lambda"
   runtime       = "python3.8"
   handler       = "index.lambda_handler"
   role          = aws_iam_role.lambda_role.arn
