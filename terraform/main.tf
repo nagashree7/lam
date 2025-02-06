@@ -25,7 +25,7 @@ resource "aws_s3_bucket" "my_bucket" {
 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "iam-role"
+  name = "lambda-role-${random_pet.lambda_policy_suffix.id}"  # Make the role name unique
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -41,6 +41,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 EOF
 }
+
 
 # Random pet for Lambda policy suffix
 resource "random_pet" "lambda_policy_suffix" {
@@ -64,7 +65,7 @@ resource "aws_iam_policy" "lambda_policy" {
         "logs:PutLogEvents"
       ],
       "Resource": [
-        "${aws_s3_bucket.my_bucket.arn}/*",  # Updated to use my_bucket ARN
+        "${aws_s3_bucket.my_bucket.arn}/*",
         "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"
       ]
     }
