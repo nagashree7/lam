@@ -15,13 +15,13 @@ data "aws_caller_identity" "current" {}
 # Create S3 bucket
 resource "aws_s3_bucket" "lambda_bucket" {
   provider = aws 
-  bucket = "s3_bucket"
+  bucket = "bucket-s3"
   force_destroy = true
 }
  
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda_role"
+  name = "iam-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -74,7 +74,7 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_cloudwatch_attach" {
  
 # Lambda function
 resource "aws_lambda_function" "s3_lambda" {
-  function_name = "Lambda_Trigger"
+  function_name = "Lambda-function"
   runtime       = "python3.8"
   handler       = "index.lambda_handler"
   role          = aws_iam_role.lambda_role.arn
